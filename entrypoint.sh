@@ -176,11 +176,12 @@ if [ "${pull_request_id}" ]; then
       head_repo_url=$(cat "$GITHUB_EVENT_PATH" | jq -r '.pull_request.head.repo.clone_url')
       base_repo_url=$(cat "$GITHUB_EVENT_PATH" | jq -r '.pull_request.base.repo.clone_url')
 
-      echo "head_repo_url: $head_repo_url"
-      echo "base_repo_url: $base_repo_url"
-      echo "cat $GITHUB_EVENT_PATH"
-      cat "$GITHUB_EVENT_PATH"
-      
+    if [ "$INPUT_DEBUG" = "true" ]; then
+        echo "head_repo_url: $head_repo_url"
+        echo "base_repo_url: $base_repo_url"
+        cat "$GITHUB_EVENT_PATH"
+      fi
+
       if [ "$head_repo_url" != "$base_repo_url" ]; then
         echo "PR is from a forked repository: $head_repo_url"
         
