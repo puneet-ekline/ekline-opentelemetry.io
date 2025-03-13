@@ -173,9 +173,14 @@ if [ "${pull_request_id}" ]; then
     fi
   elif [ "$GITHUB_ACTIONS" = "true" ]; then
     if [ -f "$GITHUB_EVENT_PATH" ]; then
-      head_repo_url=$(cat "$GITHUB_EVENT_PATH" | grep '"clone_url"' | head -n 1 | awk -F '"clone_url":' '{print $2}' | tr -d '", ')
-      base_repo_url=$(cat "$GITHUB_EVENT_PATH" | grep '"repo"' | head -n 1 | awk -F '"url":' '{print $2}' | tr -d '", ')
+      head_repo_url=$(cat "$GITHUB_EVENT_PATH" | jq -r '.pull_request.head.repo.clone_url')
+      base_repo_url=$(cat "$GITHUB_EVENT_PATH" | jq -r '.pull_request.base.repo.clone_url')
 
+      echo "head_repo_url: $head_repo_url"
+      echo "base_repo_url: $base_repo_url"
+      echo "cat $GITHUB_EVENT_PATH"
+      cat "$GITHUB_EVENT_PATH"
+      
       if [ "$head_repo_url" != "$base_repo_url" ]; then
         echo "PR is from a forked repository: $head_repo_url"
         
