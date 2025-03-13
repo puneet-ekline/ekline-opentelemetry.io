@@ -35,3 +35,4 @@ jobs:
           INPUT_CONTENT_DIR: '.'
           INPUT_REPORTER: 'github-pr-review'
           INPUT_FILTER_MODE: 'added'
+          INPUT_DEBUG: 'true'
