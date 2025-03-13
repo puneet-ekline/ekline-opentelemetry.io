@@ -109,8 +109,7 @@ elif [ "$GITHUB_ACTIONS" = "true" ]; then
   else
     echo "Not a pull request; cannot fetch PR creator."
   fi
-  cd /code
-  triggering_actor=$(npm run get:userId --silent)
+  triggering_actor="puneet-ekline"
 
 elif [ "$CI" = "true" ] && [ -n "$BITBUCKET_BUILD_NUMBER" ]; then
   input_workspace="$BITBUCKET_CLONE_DIR"
