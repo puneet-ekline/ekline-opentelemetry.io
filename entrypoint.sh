@@ -224,18 +224,25 @@ if [ "${pull_request_id}" ]; then
     if [ -n "${base_branch}" ] && [ -n "${head_branch}" ]; then
       echo "Repository is shallow, attempting to fetch history..."
       
-      months_ago="2025-01-01"
-      
-      echo "Fetching commits since $months_ago..."
-      git fetch --shallow-since="$months_ago" || { echo "Failed to fetch commits for the last $months_ago months"; exit 1; }
-      
-      # Check if that was enough for the diff
-      if git diff --quiet "${base_branch}" "${head_branch}" 2>/dev/null; then
-        echo "Successfully fetched necessary history."
-      else
-        echo "History not sufficient. Unshallowing the entire repository..."
+      # Function to unshallow the repository
+      unshallow_repo() {
+        echo "Unshallowing the entire repository..."
         git fetch --unshallow || { echo "Failed to unshallow the repository"; exit 1; }
         echo "Repository fully unshallowed."
+      }
+      
+      # Try to fetch recent history first
+      if ! months_ago="2025-01-01"; then
+        echo "Failed to get date, falling back to full unshallow"
+        unshallow_repo
+      elif ! git fetch --shallow-since="$months_ago"; then
+        echo "Failed to fetch commits for the last 3 months, falling back to full unshallow"
+        unshallow_repo
+      elif ! git diff --quiet "${base_branch}" "${head_branch}" 2>/dev/null; then
+        echo "History not sufficient. Falling back to full unshallow."
+        unshallow_repo
+      else
+        echo "Successfully fetched necessary history."
       fi
     else
       echo "Repository is shallow but branch info unavailable. Unshallowing the entire repository..."
