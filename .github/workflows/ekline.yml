@@ -1,0 +1,38 @@
+name: Ekline Validation
+
+on:
+  pull_request:
+  
+
+jobs:
+  test-entrypoint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y uuid-runtime dos2unix
+
+      - name: Debug environment
+        run: |
+          echo ${{ secrets.EK_TOKEN }}
+          printenv
+          echo ${{ github.event.pull_request.number }}
+          echo "Source: ${{ github.event_name }}"
+
+      - name: Run entrypoint script
+        run: |
+          ls -al
+          pwd
+          dos2unix entrypoint.sh
+          chmod +x entrypoint.sh
+          ./entrypoint.sh
+        env:
+          INPUT_EK_TOKEN: ${{ secrets.EK_TOKEN }}
+          INPUT_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          INPUT_CONTENT_DIR: '.'
+          INPUT_REPORTER: 'github-pr-review'
+          INPUT_FILTER_MODE: 'added'
