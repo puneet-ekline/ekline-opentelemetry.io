@@ -235,7 +235,7 @@ if [ "${pull_request_id}" ]; then
       if ! months_ago="2025-01-01"; then
         echo "Failed to get date, falling back to full unshallow"
         unshallow_repo
-      elif ! git fetch --shallow-since="$months_ago"; then
+      elif ! git fetch --shallow-since="$months_ago" origin; then
         echo "Failed to fetch commits for the last 3 months, falling back to full unshallow"
         unshallow_repo
       elif ! git diff --quiet "${base_branch}" "${head_branch}" 2>/dev/null; then
