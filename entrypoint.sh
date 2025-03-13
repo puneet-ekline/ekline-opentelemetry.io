@@ -224,7 +224,7 @@ if [ "${pull_request_id}" ]; then
     if [ -n "${base_branch}" ] && [ -n "${head_branch}" ]; then
       echo "Repository is shallow, attempting to fetch history..."
       
-      months_ago=$(cd /code && npm run get:dateMonthsAgo --silent -- 3)
+      months_ago=2025-01-01
       
       echo "Fetching commits since $months_ago..."
       git fetch --shallow-since="$months_ago" || { echo "Failed to fetch commits for the last $months_ago months"; exit 1; }
